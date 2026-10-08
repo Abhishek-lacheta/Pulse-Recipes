@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "285970399035",
+    "project_id": "machinetestabhishek",
+    "storage_bucket": "machinetestabhishek.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285970399035:android:bc994edd9736dfc7c4c11e",
+        "android_client_info": {
+          "package_name": "com.example.machine_test_abhishek"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8QwhSjWNA3mjS19abxZfpDHqSYdxw50o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
