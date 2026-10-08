@@ -1,15 +1,161 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../core/constants/app_colors.dart';
-import '../core/constants/app_strings.dart';
+import '../features/areas/pages/areas_page.dart';
 import '../features/auth/cubit/auth_cubit.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
-import '../features/auth/presentation/widgets/app_logo.dart';
+import '../features/categories/pages/categories_page.dart';
+import '../features/home/bloc/home_bloc.dart';
+import '../features/home/pages/home_page.dart';
+import '../features/ingredients/pages/ingredients_page.dart';
+import '../features/search/pages/search_page.dart';
+import '../injection/dependency_injection.dart';
 
-/// Production-ready Home Screen displaying authenticated user state.
-/// Contains ZERO direct Firebase calls; strictly communicates through [AuthCubit].
-class HomeScreen extends StatelessWidget {
+/// Main Application Shell integrating TheMealDB recipe features and Firebase Auth.
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0;
+
+  void _onTabSelected(int index) {
+    setState(() => _currentIndex = index);
+  }
+
+  void _showProfileModal(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (modalContext) {
+        return BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            final user = state is AuthAuthenticated
+                ? state.user
+                : (state is AuthSuccess ? state.user : null);
+
+            final name = user?.displayName ?? 'Chef';
+            final email = user?.email ?? 'No email associated';
+            final uid = user?.id ?? 'N/A';
+
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 36),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 44,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: AppColors.border,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 28,
+                        backgroundColor: AppColors.surfaceLight,
+                        backgroundImage: user?.photoUrl != null
+                            ? NetworkImage(user!.photoUrl!)
+                            : null,
+                        child: user?.photoUrl == null
+                            ? const Icon(
+                                Icons.person_rounded,
+                                size: 30,
+                                color: AppColors.primaryLight,
+                              )
+                            : null,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              email,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.background,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.verified_user_rounded,
+                          size: 16,
+                          color: AppColors.primaryLight,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'UID: $uid',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontFamily: 'monospace',
+                              color: AppColors.textMuted,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.of(modalContext).pop();
+                      context.read<AuthCubit>().signOut();
+                    },
+                    icon: const Icon(Icons.logout_rounded, size: 18),
+                    label: const Text('Sign Out'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.surfaceLight,
+                      foregroundColor: AppColors.textPrimary,
+                      side: const BorderSide(color: AppColors.border),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,244 +166,115 @@ class HomeScreen extends StatelessWidget {
             MaterialPageRoute<void>(builder: (_) => const LoginScreen()),
             (route) => false,
           );
-        } else if (state is AuthError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: AppColors.error,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
         }
       },
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          title: const Text(
-            AppStrings.appName,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          actions: [
-            BlocBuilder<AuthCubit, AuthState>(
-              builder: (context, state) {
-                final isLoading = state is AuthLoading;
-                return IconButton(
-                  tooltip: AppStrings.signOut,
-                  icon: isLoading
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.textSecondary,
-                          ),
-                        )
-                      : const Icon(
-                          Icons.logout_rounded,
-                          color: AppColors.textSecondary,
-                        ),
-                  onPressed: isLoading
-                      ? null
-                      : () => context.read<AuthCubit>().signOut(),
-                );
-              },
-            ),
-            const SizedBox(width: 8),
-          ],
-        ),
-        body: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 440),
-                child: BlocBuilder<AuthCubit, AuthState>(
-                  builder: (context, state) {
-                    final user = state is AuthAuthenticated
-                        ? state.user
-                        : (state is AuthSuccess ? state.user : null);
-
-                    final displayName = user?.displayName?.isNotEmpty == true
-                        ? user!.displayName!
-                        : AppStrings.guestUser;
-                    final email = user?.email ?? 'No email associated';
-                    final uid = user?.id ?? 'N/A';
-                    final photoUrl = user?.photoUrl;
-
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // App Logo Header
-                        const Center(
-                          child: AppLogo(size: 72),
-                        ),
-                        const SizedBox(height: 24),
-
-                        // Welcome Heading
-                        Text(
-                          '${AppStrings.welcomeUser}\n$displayName',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: -0.5,
-                            color: AppColors.textPrimary,
-                            height: 1.25,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          AppStrings.authStatus,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: AppColors.primaryLight,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-
-                        // Profile Card
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: AppColors.surface,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: AppColors.border),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 28,
-                                    backgroundColor: AppColors.surfaceLight,
-                                    backgroundImage: photoUrl != null
-                                        ? NetworkImage(photoUrl)
-                                        : null,
-                                    child: photoUrl == null
-                                        ? const Icon(
-                                            Icons.person_rounded,
-                                            size: 30,
-                                            color: AppColors.primaryLight,
-                                          )
-                                        : null,
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          displayName,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.textPrimary,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          email,
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            color: AppColors.textSecondary,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                              const Divider(
-                                color: AppColors.border,
-                                height: 1,
-                              ),
-                              const SizedBox(height: 16),
-
-                              // User UID Info
-                              const Text(
-                                'User UID',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.textMuted,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 8,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.background,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: AppColors.border),
-                                ),
-                                child: Text(
-                                  uid,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: 'monospace',
-                                    color: AppColors.textSecondary,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-
-                        // Sign Out Button
-                        BlocBuilder<AuthCubit, AuthState>(
-                          builder: (context, state) {
-                            final isLoading = state is AuthLoading;
-                            return ElevatedButton.icon(
-                              onPressed: isLoading
-                                  ? null
-                                  : () => context.read<AuthCubit>().signOut(),
-                              icon: isLoading
-                                  ? const SizedBox(
-                                      width: 18,
-                                      height: 18,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: AppColors.white,
-                                      ),
-                                    )
-                                  : const Icon(Icons.logout_rounded, size: 20),
-                              label: Text(
-                                isLoading ? 'Signing Out...' : AppStrings.signOut,
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.surfaceLight,
-                                foregroundColor: AppColors.textPrimary,
-                                side: const BorderSide(color: AppColors.border),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  },
+      child: BlocProvider<HomeBloc>(
+        create: (context) => HomeBloc(DependencyInjection.mealRepository)
+          ..add(const HomeFetchDataEvent()),
+        child: Scaffold(
+          backgroundColor: AppColors.background,
+          appBar: AppBar(
+            backgroundColor: AppColors.background,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            title: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.bolt_rounded,
+                    color: AppColors.primaryLight,
+                    size: 20,
+                  ),
                 ),
+                const SizedBox(width: 10),
+                const Text(
+                  'Pulse Recipes',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              IconButton(
+                tooltip: 'Account Profile',
+                icon: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.border, width: 1.5),
+                  ),
+                  child: const Icon(
+                    Icons.person_outline_rounded,
+                    color: AppColors.textPrimary,
+                    size: 20,
+                  ),
+                ),
+                onPressed: () => _showProfileModal(context),
               ),
+              const SizedBox(width: 8),
+            ],
+          ),
+          body: IndexedStack(
+            index: _currentIndex,
+            children: [
+              HomePage(
+                onNavigateToSearch: () => _onTabSelected(1),
+                onNavigateToCategories: () => _onTabSelected(2),
+                onNavigateToAreas: () => _onTabSelected(3),
+                onNavigateToIngredients: () => _onTabSelected(4),
+              ),
+              const SearchPage(),
+              const CategoriesPage(),
+              const AreasPage(),
+              const IngredientsPage(),
+            ],
+          ),
+          bottomNavigationBar: Container(
+            decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: AppColors.border, width: 1)),
+            ),
+            child: NavigationBar(
+              backgroundColor: AppColors.surface,
+              selectedIndex: _currentIndex,
+              onDestinationSelected: _onTabSelected,
+              indicatorColor: AppColors.primary.withValues(alpha: 0.25),
+              elevation: 0,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+              destinations: const [
+                NavigationDestination(
+                  icon: Icon(Icons.home_outlined, color: AppColors.textSecondary),
+                  selectedIcon: Icon(Icons.home_rounded, color: AppColors.primaryLight),
+                  label: 'Home',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.search_outlined, color: AppColors.textSecondary),
+                  selectedIcon: Icon(Icons.search_rounded, color: AppColors.primaryLight),
+                  label: 'Search',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.category_outlined, color: AppColors.textSecondary),
+                  selectedIcon: Icon(Icons.category_rounded, color: AppColors.primaryLight),
+                  label: 'Categories',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.public_outlined, color: AppColors.textSecondary),
+                  selectedIcon: Icon(Icons.public_rounded, color: AppColors.primaryLight),
+                  label: 'Cuisines',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.egg_alt_outlined, color: AppColors.textSecondary),
+                  selectedIcon: Icon(Icons.egg_alt_rounded, color: AppColors.primaryLight),
+                  label: 'Ingredients',
+                ),
+              ],
             ),
           ),
         ),

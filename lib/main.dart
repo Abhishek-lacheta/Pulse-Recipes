@@ -8,12 +8,16 @@ import 'features/auth/cubit/auth_cubit.dart';
 import 'features/auth/presentation/screens/splash_screen.dart';
 import 'firebase/auth/auth_repository.dart';
 import 'firebase/firebase_initializer.dart';
+import 'injection/dependency_injection.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase Core & Google Sign-In services
   await FirebaseInitializer.initialize();
+
+  // Initialize Dependency Injection container for TheMealDB API
+  DependencyInjection.init();
 
   // Configure modern edge-to-edge UI overlay
   SystemChrome.setSystemUIOverlayStyle(
