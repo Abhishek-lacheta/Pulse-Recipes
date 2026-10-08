@@ -8,6 +8,7 @@ import '../../../core/widgets/app_shimmer.dart';
 import '../../../core/widgets/error_state_widget.dart';
 import '../../../injection/dependency_injection.dart';
 import '../bloc/meal_details_bloc.dart';
+import '../widgets/youtube_webview_page.dart';
 
 /// Rich recipe detail screen consuming TheMealDB lookup API.
 class MealDetailsPage extends StatelessWidget {
@@ -367,7 +368,16 @@ class MealDetailsPage extends StatelessWidget {
                                 if (meal.strYoutube != null && meal.strYoutube!.isNotEmpty)
                                   Expanded(
                                     child: OutlinedButton.icon(
-                                      onPressed: () => _openUrl(meal.strYoutube!),
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute<void>(
+                                            builder: (_) => YoutubeWebViewPage(
+                                              url: meal.strYoutube!,
+                                              title: meal.strMeal,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                       icon: const Icon(
                                         Icons.play_circle_fill_rounded,
                                         color: Color(0xFFFF0000),
