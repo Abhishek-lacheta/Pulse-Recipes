@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../screens/home_screen.dart';
+import '../../cubit/auth_cubit.dart';
 import '../widgets/app_logo.dart';
 import 'login_screen.dart';
 
-/// Clean, minimal, and premium splash screen.
+/// Clean, minimal, and premium splash screen with auth-state-based routing.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -43,16 +46,24 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    // Auto-navigate to LoginScreen after 2.2 seconds
-    _navigationTimer = Timer(const Duration(milliseconds: 2200), _navigateToLogin);
+    // Check authentication state after brand animation displays
+    _navigationTimer = Timer(
+      const Duration(milliseconds: 2000),
+      _checkAuthAndNavigate,
+    );
   }
 
-  void _navigateToLogin() {
+  void _checkAuthAndNavigate() {
     if (!mounted) return;
+
+    final authState = context.read<AuthCubit>().state;
+    final Widget destination = (authState is AuthAuthenticated)
+        ? const HomeScreen()
+        : const LoginScreen();
+
     Navigator.of(context).pushReplacement(
       PageRouteBuilder<void>(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const LoginScreen(),
+        pageBuilder: (context, animation, secondaryAnimation) => destination,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
