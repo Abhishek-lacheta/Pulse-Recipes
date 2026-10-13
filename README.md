@@ -5,13 +5,13 @@
 
 ---
 
-[![Flutter Version](https://img.shields.io/badge/Flutter-%5E3.12.0-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Flutter Version](https://img.shields.io/badge/Flutter-%3E%3D3.44.0-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart Version](https://img.shields.io/badge/Dart-%5E3.12.0-0175C2?logo=dart&logoColor=white)](https://dart.dev)
 [![State Management](https://img.shields.io/badge/State%20Management-BLoC%20%2F%20Cubit-8B5CF6)](https://bloclibrary.dev)
 [![Networking](https://img.shields.io/badge/Networking-Dio%20%2B%20Retrofit-22C55E)](https://pub.dev/packages/retrofit)
 [![Authentication](https://img.shields.io/badge/Auth-Firebase%20%2B%20Google%20OAuth-FFA611?logo=firebase&logoColor=white)](https://firebase.google.com)
 [![Analysis Status](https://img.shields.io/badge/Analysis-0%20Issues-success)](https://flutter.dev)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
@@ -147,28 +147,30 @@ The project strictly follows **Clean Architecture** patterns, ensuring high test
 
 ## 🛠️ Technology Stack
 
-| Layer | Technology | Details / Purpose |
-| :--- | :--- | :--- |
-| **Framework** | [Flutter 3.x](https://flutter.dev) | Cross-platform declarative UI toolkit |
-| **Language** | [Dart 3.x](https://dart.dev) | Modern typed language with sound null-safety |
-| **State Management** | [`flutter_bloc`](https://pub.dev/packages/flutter_bloc) (9.1.1) | Predictable, event-driven reactive state management |
-| **HTTP Client** | [`dio`](https://pub.dev/packages/dio) (5.11.1) | Interceptors, request timeout management, error wrapping |
-| **REST API Generator** | [`retrofit`](https://pub.dev/packages/retrofit) (4.10.0) | Type-safe REST client generator targeting TheMealDB |
-| **JSON Serialization**| [`json_serializable`](https://pub.dev/packages/json_serializable) | Code-generated JSON encoders and decoders |
-| **Authentication** | [`firebase_auth`](https://pub.dev/packages/firebase_auth) | User authentication and session lifecycle management |
-| **OAuth** | [`google_sign_in`](https://pub.dev/packages/google_sign_in) | One-tap Google authentication flow |
-| **Image Caching** | [`cached_network_image`](https://pub.dev/packages/cached_network_image) | In-memory and disk caching with placeholder shimmer |
-| **Shimmer Effects** | [`shimmer`](https://pub.dev/packages/shimmer) | Skeleton loading animations for smooth perceptual loading |
-| **In-App Webview** | [`webview_flutter`](https://pub.dev/packages/webview_flutter) | Embedded YouTube recipe video player |
-| **URL Launcher** | [`url_launcher`](https://pub.dev/packages/url_launcher) | External application and browser deep linking |
-| **Reactive Streams** | [`rxdart`](https://pub.dev/packages/rxdart) | Debounce and stream transformations for search queries |
+| Layer | Technology | Version | Purpose |
+| :--- | :--- | :--- | :--- |
+| **Framework** | [Flutter](https://flutter.dev) | `>=3.44.0` | Cross-platform declarative UI toolkit |
+| **Language** | [Dart](https://dart.dev) | `^3.12.0` | Modern typed language with sound null-safety |
+| **State Management** | [`flutter_bloc`](https://pub.dev/packages/flutter_bloc) | `^9.1.1` | Predictable, event-driven reactive state management |
+| **HTTP Client** | [`dio`](https://pub.dev/packages/dio) | `^5.11.1` | Interceptors, request timeout management, error wrapping |
+| **REST API Generator** | [`retrofit`](https://pub.dev/packages/retrofit) | `^4.10.0` | Type-safe REST client generator targeting TheMealDB |
+| **JSON Serialization**| [`json_serializable`](https://pub.dev/packages/json_serializable) | `^6.14.1` | Code-generated JSON encoders and decoders |
+| **Authentication** | [`firebase_auth`](https://pub.dev/packages/firebase_auth) | `^6.7.0` | User authentication and session lifecycle management |
+| **Firebase Core** | [`firebase_core`](https://pub.dev/packages/firebase_core) | `^4.15.0` | Firebase app core initialization |
+| **OAuth** | [`google_sign_in`](https://pub.dev/packages/google_sign_in) | `^7.2.0` | One-tap Google authentication flow |
+| **Value Equality** | [`equatable`](https://pub.dev/packages/equatable) | `^3.0.0` | Value comparison for BLoC states & domain models |
+| **Image Caching** | [`cached_network_image`](https://pub.dev/packages/cached_network_image) | `^4.0.3` | In-memory and disk caching with placeholder shimmer |
+| **Shimmer Effects** | [`shimmer`](https://pub.dev/packages/shimmer) | `^4.0.0` | Skeleton loading animations for smooth perceptual loading |
+| **In-App Webview** | [`webview_flutter`](https://pub.dev/packages/webview_flutter) | `^4.14.1` | Embedded YouTube recipe video player |
+| **URL Launcher** | [`url_launcher`](https://pub.dev/packages/url_launcher) | `^6.3.3` | External application and browser deep linking |
+| **Reactive Streams** | [`rxdart`](https://pub.dev/packages/rxdart) | `^0.28.0` | Debounce and stream transformations for search queries |
 
 ---
 
 ## 📂 Project Structure
 
 ```
-pulse_recipes/
+Pulse-Recipes/
 ├── android/                   # Android native platform configuration & Gradle scripts
 ├── ios/                       # iOS native platform configuration & Runner xcworkspace
 ├── web/                       # Web entrypoint, manifest.json, and index.html
@@ -185,9 +187,10 @@ pulse_recipes/
 │   ├── 10_recipe_instructions.jpeg
 │   └── 11_youtube_video_recipe.jpeg
 ├── test/                      # Unit and widget test suite
-│   └── widget_test.dart       # App initialization and splash test
+│   └── widget_test.dart       # App initialization and splash screen test
 ├── lib/
 │   ├── main.dart              # Application entry point & theme initialization
+│   ├── firebase_options.dart  # Generated Firebase platform options
 │   ├── core/                  # Core infrastructure shared across features
 │   │   ├── constants/         # AppColors, AppStrings, AppConstants, ApiConstants
 │   │   ├── error/             # AppException hierarchy and centralized ErrorHandler
@@ -220,15 +223,15 @@ pulse_recipes/
 ## 🚀 Getting Started & Setup
 
 ### Prerequisites
-- **Flutter SDK**: `^3.12.0` (or higher)
-- **Dart SDK**: `^3.12.0` (or higher)
+- **Flutter SDK**: `>=3.44.0` (Stable channel)
+- **Dart SDK**: `^3.12.0` (defined in `pubspec.yaml`)
 - **Android Studio** / **VS Code** with Flutter and Dart extensions
-- **Device or Emulator**: Android (API level 21+) or iOS (iOS 12.0+)
+- **Device or Emulator**: Android (API level 21+)
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Abhishek-lacheta/machine_test_abhishek.git
-cd machine_test_abhishek
+git clone https://github.com/Abhishek-lacheta/Pulse-Recipes.git
+cd Pulse-Recipes
 ```
 
 ### 2. Install Dependencies
@@ -243,37 +246,47 @@ dart run build_runner build --delete-conflicting-outputs
 ```
 
 ### 4. Firebase Configuration
-The project is pre-configured with Firebase Authentication (`google-services.json` included in `android/app/`).
-- If setting up a personal Firebase project:
-  1. Create a project on the [Firebase Console](https://console.firebase.google.com/).
-  2. Enable **Email/Password** and **Google Sign-In** under Authentication.
-  3. Place your own `google-services.json` in `android/app/`.
+The application is pre-configured for Android authentication with `google-services.json` in `android/app/` and `lib/firebase_options.dart`.
+
+To connect your own Firebase project:
+1. Create a new project in the [Firebase Console](https://console.firebase.google.com/).
+2. Navigate to **Authentication > Sign-in method** and enable:
+   - **Email/Password**
+   - **Google**
+3. Register an Android app using your package name (e.g., `com.example.machine_test_abhishek`).
+4. Download the resulting `google-services.json` and place it into `android/app/`.
+5. *(Optional for other platforms)*: Run `flutterfire configure` to generate updated platform options.
 
 ### 5. Run the Application
 ```bash
-# Debug mode
+# Launch on default connected Android device or emulator
 flutter run
 
-# Run on specific target
-flutter run -d chrome
-flutter run -d emulator-5554
+# Launch on a specific target device
+flutter run -d <device-id>
 ```
 
 ---
 
 ## 🧪 Quality Assurance & Static Analysis
 
-The codebase adheres strictly to the official Dart & Flutter style guides with zero analyzer warnings:
+The codebase adheres strictly to official Dart & Flutter standards with zero analyzer warnings and passing test suites:
 
 ```bash
 # Run static analysis
 flutter analyze
 # Output: No issues found!
 
-# Run test suite
+# Run widget & unit tests
 flutter test
 # Output: All tests passed!
 ```
+
+---
+
+## 📄 License
+
+This project is open-source and available under the [MIT License](https://opensource.org/licenses/MIT).
 
 ---
 
@@ -282,8 +295,9 @@ flutter test
 Developed by **Abhishek Lacheta**. Built to showcase production-grade Flutter architecture, clean state management, API integration, and user-centric mobile UI design.
 
 - **GitHub**: [@Abhishek-lacheta](https://github.com/Abhishek-lacheta)
-- **LinkedIn**: [Connect with Abhishek](https://www.linkedin.com)
-- **Email**: Reach out for opportunities & discussions!
+- **Repository**: [Abhishek-lacheta/Pulse-Recipes](https://github.com/Abhishek-lacheta/Pulse-Recipes)
+- **LinkedIn**: [Abhishek Lacheta](https://www.linkedin.com/in/abhishek-lacheta-87635b320/)
+- **Email**: [abhisheklacheta@gmail.com](mailto:abhisheklacheta@gmail.com)
 
 ---
 
