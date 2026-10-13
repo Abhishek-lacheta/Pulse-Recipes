@@ -1,5 +1,5 @@
-name: machine_test_abhishek
-description: "A new Flutter project."
+name: pulse_recipes
+description: "Pulse Recipes - A modern Flutter culinary discovery and recipe application powered by TheMealDB REST API, Firebase Authentication, and Clean Architecture with BLoC."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

@@ -1,11 +1,11 @@
 {
-    "name": "machine_test_abhishek",
-    "short_name": "machine_test_abhishek",
+    "name": "Pulse Recipes",
+    "short_name": "Pulse Recipes",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Pulse Recipes - Modern Flutter culinary discovery and recipe application.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

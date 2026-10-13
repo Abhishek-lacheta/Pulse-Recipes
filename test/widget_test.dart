@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:machine_test_abhishek/core/constants/app_strings.dart';
-import 'package:machine_test_abhishek/firebase/auth/auth_repository.dart';
-import 'package:machine_test_abhishek/main.dart';
+import 'package:pulse_recipes/core/constants/app_strings.dart';
+import 'package:pulse_recipes/firebase/auth/auth_repository.dart';
+import 'package:pulse_recipes/main.dart';
 
 class FakeAuthRepository implements AuthRepository {
   final _controller = StreamController<AuthUser?>.broadcast();
