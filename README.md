@@ -292,12 +292,9 @@ This project is open-source and available under the [MIT License](https://openso
 
 ## 👨‍💻 Author & Portfolio Note
 
-Developed by **Abhishek Lacheta**. Built to showcase production-grade Flutter architecture, clean state management, API integration, and user-centric mobile UI design.
+**Author:** Abhishek Lacheta  
+[GitHub Profile](https://github.com/Abhishek-lacheta)
 
-- **GitHub**: [@Abhishek-lacheta](https://github.com/Abhishek-lacheta)
-- **Repository**: [Abhishek-lacheta/Pulse-Recipes](https://github.com/Abhishek-lacheta/Pulse-Recipes)
-- **LinkedIn**: [Abhishek Lacheta](https://www.linkedin.com/in/abhishek-lacheta-87635b320/)
-- **Email**: [abhisheklacheta@gmail.com](mailto:abhisheklacheta@gmail.com)
 
 ---
 
